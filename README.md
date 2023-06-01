@@ -10,3 +10,4 @@ The application uses a deep learning model trained on an anime dataset (Anime_da
 ## Supported Anime
 
 Here you can see what anime neural network supports: [click](https://github.com/shidktbw/anime-recommend/blob/main/web/templates/supported_anime.html)
+
