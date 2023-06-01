@@ -11,3 +11,5 @@ The application uses a deep learning model trained on an anime dataset (Anime_da
 
 Here you can see what anime neural network supports: [click](https://github.com/shidktbw/anime-recommend/blob/main/web/templates/supported_anime.html)
 
+## ⚠️ Important Note
+Please make sure to enter the exact title of the anime you've watched, as it appears in the supported anime list ([supported anime](https://github.com/shidktbw/anime-recommend/blob/main/web/templates/supported_anime.html)). If the title is not correctly entered, the application will not be able to use it for generating recommendations, and may instead recommend random anime that are not related to your input.
