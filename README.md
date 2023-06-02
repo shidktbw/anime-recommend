@@ -1,4 +1,5 @@
 # Anime Recommendation System o(>ω<)o
+![431cddc71cc126d5f92d51cf6a99-1276609](https://github.com/shidktbw/anime-recommend/assets/112849918/21922799-54ab-4f63-a943-b6c15b4268ec)
 
 
 ## Overview
