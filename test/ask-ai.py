@@ -1,34 +1,44 @@
-import pandas as pd
+import tensorflow as tf
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras.models import load_model
 
-def recommend_anime(model, user_history):
-    unseen_df = df[~df['Title'].isin(user_history)].copy()
-    studio = unseen_df['Studio'].values
-    producer = unseen_df['Producer'].values
-    anime_type = unseen_df['Type'].values
-    ratings = model.predict([studio, producer])
-    unseen_df.loc[:, 'PredictedRating'] = ratings
-    unseen_df = unseen_df.sort_values('PredictedRating', ascending=False)
-    recommended_anime = unseen_df.head(5)
-    return recommended_anime[['Title', 'Link']].values.tolist()
+
+model = tf.keras.models.load_model('anime.h5')
 
 
 df = pd.read_csv('train/Anime_data.csv')
 
-label_encoder = LabelEncoder()
-df['Studio'] = label_encoder.fit_transform(df['Studio'])
-df['Producer'] = label_encoder.fit_transform(df['Producer'])
-df['Type'] = label_encoder.fit_transform(df['Type'])
+# test list anime
+my_favorite_anime = ['Marmalade Boy', 'Matantei Loki Ragnarok', 'Ginyuu Mokushiroku Meine Liebe', 
+                     'Psychic Academy', 'Versailles no Bara']
 
-# Загрузка модели
-model = load_model('anime.h5')
-
-# История пользователя
-user_history = ['Mezzo Forte', 'Mezzo Forte', 'Mezzo Forte', 'Mezzo Forte', 'Mezzo Forte']
+favorite_anime_info = df[df['Title'].isin(my_favorite_anime)]
 
 
-recommendations = recommend_anime(model, user_history)
-for anime, link in recommendations:
-    print(f"Recommended Anime: {anime}\nLink: {link}\n")
+studio_le = LabelEncoder()
+producer_le = LabelEncoder()
+
+# LabelEncoder 
+studio_le.fit(df['Studio'])
+producer_le.fit(df['Producer'])
+
+# Convert data to format
+studio_input = studio_le.transform(favorite_anime_info['Studio'].values)
+producer_input = producer_le.transform(favorite_anime_info['Producer'].values)
+
+# We obtain the probability distribution from our model
+predictions = model.predict([studio_input, producer_input])
+
+# Find the type of anime with the highest probability for each of your favorite anime
+recommended_types = np.argmax(predictions, axis=1)
+
+# Use LabelEncoder to convert the predicted types back to their original labels
+type_le = LabelEncoder()
+type_le.fit(df['Type'])
+recommended_types_labels = type_le.inverse_transform(recommended_types)
+
+# Lets find anime of these types in our DataFrame and recommend and input labels
+recommended_anime = df[df['Type'].isin(recommended_types_labels)]
+
+print(recommended_anime)
