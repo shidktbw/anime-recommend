@@ -8,7 +8,7 @@ def recommend_anime(model, user_history):
     studio = unseen_df['Studio'].values
     producer = unseen_df['Producer'].values
     anime_type = unseen_df['Type'].values
-    ratings = model.predict([studio, producer, anime_type])
+    ratings = model.predict([studio, producer])
     unseen_df.loc[:, 'PredictedRating'] = ratings
     unseen_df = unseen_df.sort_values('PredictedRating', ascending=False)
     recommended_anime = unseen_df.head(5)
