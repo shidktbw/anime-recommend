@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key'
 
 df = pd.read_csv('train/Anime_data.csv')
 
@@ -17,14 +18,11 @@ model = load_model('anime.h5')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    session['recommendations'] = []  
     if request.method == 'POST':
         user_history = request.form.getlist('anime')  
-
-        
-        recommendations = recommend_anime(model, user_history)
-        return render_template('index.html', recommendations=recommendations)
-    else:
-        return render_template('index.html')
+        session['recommendations'] = recommend_anime(model, user_history)
+    return render_template('index.html', recommendations=session['recommendations'])
     
 @app.route('/supported_anime')
 def supported_anime():
